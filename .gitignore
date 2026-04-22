@@ -1,0 +1,16 @@
+.turbo
+.vercel
+node_modules
+dist
+.next
+coverage
+playwright-report
+test-results
+pnpm-lock.yaml
+.env
+.env.local
+.env.*.local
+!.env.example
+packages/db/generated
+apps/web/.next
+apps/web/node_modules

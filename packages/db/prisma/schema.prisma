@@ -1,0 +1,253 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts    Account[]
+  sessions    Session[]
+  memberships OrganizationMember[]
+  ownedOrgs   Organization[]
+}
+
+model Organization {
+  id                   String   @id @default(cuid())
+  name                 String
+  slug                 String   @unique
+  logoUrl              String?
+  brandColor           String   @default("#0f766e")
+  customDomain         String?  @unique
+  planId               String   @default("free")
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?  @unique
+  supportEmail         String?
+  footerMessage        String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  ownerId              String
+
+  owner    User                 @relation(fields: [ownerId], references: [id])
+  members  OrganizationMember[]
+  clients  Client[]
+  projects Project[]
+
+  @@index([slug])
+  @@index([ownerId])
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  role           MemberRole   @default(MEMBER)
+  organizationId String
+  userId         String
+  joinedAt       DateTime     @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model Client {
+  id             String       @id @default(cuid())
+  name           String
+  email          String
+  company        String?
+  avatarUrl      String?
+  organizationId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  projects     Project[]
+
+  @@index([organizationId])
+  @@index([email])
+}
+
+model Project {
+  id             String        @id @default(cuid())
+  name           String
+  slug           String
+  description    String?       @db.Text
+  status         ProjectStatus @default(IN_PROGRESS)
+  visibility     Visibility    @default(LINK_ONLY)
+  accessToken    String        @unique @default(cuid())
+  dueDate        DateTime?
+  startDate      DateTime?
+  completedAt    DateTime?
+  organizationId String
+  clientId       String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  organization Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  client       Client?             @relation(fields: [clientId], references: [id])
+  milestones   Milestone[]
+  updates      ProjectUpdate[]
+  integrations ProjectIntegration[]
+  pageViews    PageView[]
+
+  @@unique([organizationId, slug])
+  @@index([organizationId])
+  @@index([clientId])
+  @@index([accessToken])
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  IN_REVIEW
+  COMPLETED
+  ON_HOLD
+  CANCELLED
+}
+
+enum Visibility {
+  PRIVATE
+  LINK_ONLY
+  PUBLIC
+}
+
+model Milestone {
+  id          String          @id @default(cuid())
+  title       String
+  description String?         @db.Text
+  status      MilestoneStatus @default(PENDING)
+  dueDate     DateTime?
+  completedAt DateTime?
+  order       Int             @default(0)
+  projectId   String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  BLOCKED
+}
+
+model ProjectUpdate {
+  id         String     @id @default(cuid())
+  content    String     @db.Text
+  type       UpdateType @default(MANUAL)
+  metadata   Json?
+  projectId  String
+  authorName String?
+  createdAt  DateTime   @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([createdAt])
+}
+
+enum UpdateType {
+  MANUAL
+  MILESTONE_COMPLETED
+  STATUS_CHANGED
+  GITHUB_COMMIT
+  GITHUB_PR_MERGED
+  LINEAR_ISSUE_CLOSED
+  TRELLO_CARD_MOVED
+}
+
+model ProjectIntegration {
+  id         String          @id @default(cuid())
+  type       IntegrationType
+  config     Json
+  isActive   Boolean         @default(true)
+  projectId  String
+  lastSyncAt DateTime?
+  createdAt  DateTime        @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+enum IntegrationType {
+  GITHUB
+  LINEAR
+  TRELLO
+  JIRA
+  NOTION
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  projectId String
+  ip        String?
+  country   String?
+  userAgent String?
+  referrer  String?
+  viewedAt  DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([viewedAt])
+}

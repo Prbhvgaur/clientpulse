@@ -1,0 +1,22 @@
+{
+  "name": "clientpulse",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.21.0",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "test": "turbo test",
+    "test:e2e": "pnpm --filter @clientpulse/web test:e2e",
+    "test:coverage": "turbo test -- --coverage",
+    "db:generate": "pnpm --filter @clientpulse/db db:generate",
+    "db:migrate": "pnpm --filter @clientpulse/db db:migrate",
+    "db:push": "pnpm --filter @clientpulse/db db:push",
+    "db:seed": "pnpm --filter @clientpulse/db db:seed"
+  },
+  "devDependencies": {
+    "turbo": "2.6.1"
+  }
+}
