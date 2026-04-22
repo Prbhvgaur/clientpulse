@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@clientpulse/ui";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
 
 import { demoClients } from "@/lib/demo-store";
 

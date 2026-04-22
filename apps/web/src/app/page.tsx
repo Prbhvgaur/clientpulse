@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Globe2, Layers3, MessageSquareText } from "lucide-react";
 
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@clientpulse/ui";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
 
 import { MarketingNav } from "@/components/shell";
 

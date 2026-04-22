@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@clientpulse/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
 
 import { demoClients, demoProjects } from "@/lib/demo-store";
 

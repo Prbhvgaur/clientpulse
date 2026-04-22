@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@clientpulse/ui";
+import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
 
 import { getProjectBundleById } from "@/lib/repository";
 import { formatDate, milestoneStatusMeta, projectStatusMeta } from "@/lib/utils";

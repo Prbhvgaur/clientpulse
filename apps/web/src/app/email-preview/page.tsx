@@ -1,7 +1,7 @@
 import { render } from "@react-email/render";
 
-import { MagicLinkEmail, MilestoneCompletedEmail, PaymentFailedEmail, ProjectSharedEmail, TeamInviteEmail, WelcomeEmail } from "@clientpulse/email";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@clientpulse/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui";
+import { MagicLinkEmail, MilestoneCompletedEmail, PaymentFailedEmail, ProjectSharedEmail, TeamInviteEmail, WelcomeEmail } from "@/lib/email-templates";
 
 export default async function EmailPreviewPage() {
   if (process.env.NODE_ENV === "production") {

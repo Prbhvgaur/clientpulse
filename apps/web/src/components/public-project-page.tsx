@@ -11,7 +11,7 @@ import {
   Radio,
 } from "lucide-react";
 
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Progress } from "@clientpulse/ui";
+import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Progress } from "@/components/ui";
 
 import type { AppMilestone, AppProjectUpdate, ProjectBundle } from "@/lib/types";
 import { cn, formatDate, formatRelative, milestoneStatusMeta, percentElapsed, projectStatusMeta } from "@/lib/utils";

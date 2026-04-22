@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, LayoutDashboard, Sparkles } from "lucide-react";
 
-import { Badge, Button } from "@clientpulse/ui";
+import { Badge, Button } from "@/components/ui";
 
 export function MarketingNav() {
   return (

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Progress } from "@clientpulse/ui";
+import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Progress } from "@/components/ui";
 
 import { demoProjects } from "@/lib/demo-store";
 import { projectStatusMeta } from "@/lib/utils";
